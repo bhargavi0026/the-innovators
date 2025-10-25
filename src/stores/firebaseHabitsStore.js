@@ -10,24 +10,31 @@ export const useFirebaseHabitsStore = create(
 
 		// Initialize habits from Firebase
 		initializeHabits: async () => {
-			set({ isLoading: true });
-			try {
-				const habits = await firebaseDataManager.loadHabits();
-				const safeHabits = Array.isArray(habits) ? habits : [];
-				set({ 
-					habits: safeHabits, 
-					isLoading: false, 
-					isInitialized: true 
-				});
-			} catch (error) {
-				console.error('Error initializing habits:', error);
-				set({ 
-					habits: [], 
-					isLoading: false, 
-					isInitialized: true 
-				});
-			}
-		},
+	// 👇 Prevent re-initialization if already done
+	if (get().isInitialized) {
+		console.log('Habits already initialized — skipping fetch.');
+		return;
+	}
+
+	set({ isLoading: true });
+	try {
+		const habits = await firebaseDataManager.loadHabits();
+		const safeHabits = Array.isArray(habits) ? habits : [];
+		set({ 
+			habits: safeHabits, 
+			isLoading: false, 
+			isInitialized: true 
+		});
+	} catch (error) {
+		console.error('Error initializing habits:', error);
+		set({ 
+			habits: [], 
+			isLoading: false, 
+			isInitialized: true 
+		});
+	}
+},
+
 
 		// Dispatch actions and save to Firebase
 		habitsDispatch: async (actions) => {
