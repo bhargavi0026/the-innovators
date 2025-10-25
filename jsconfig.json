@@ -1,4 +1,6 @@
-{
+ // TypeScript compiler configuration
+
+ {
 	"compilerOptions": {
 		"target": "ES2024",
 		"module": "Node16",
